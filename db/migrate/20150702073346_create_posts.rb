@@ -7,9 +7,9 @@ class CreatePosts < ActiveRecord::Migration
       t.string :post_link
       t.text :post_date
       t.string :post_title
-      t.integer :message_id, :limit => 8
+      t.integer :message_id, :limit => 64.kilobytes + 1
       t.integer :post_number
-      t.text :post_body, :limit => 4294967295
+      t.text :post_body, :limit => 64.kilobytes + 1
 	    t.timestamps
       
     end
