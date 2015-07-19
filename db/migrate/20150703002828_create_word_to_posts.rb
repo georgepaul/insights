@@ -4,7 +4,7 @@ class CreateWordToPosts < ActiveRecord::Migration
 		t.integer :post_id
 		t.integer :word_id
 		t.integer :user_id 
-		t.source_type :integer
+		t.integer :source_type
 		t.timestamps
     end
   end
