@@ -1,13 +1,17 @@
 class CreatePosts < ActiveRecord::Migration
   def change
     create_table :posts do |t|
-      t.column :post_body, :string
-      t.column :post_number, :integer
-      t.column :post_title, :string
-      t.column :post_date, :timestamp
-      t.column :post_link, :string
-      t.column :user_id, :integer
+      
+      t.integer :board_id
+      t.integer :user_id
+      t.string :post_link
+      t.text :post_date
+      t.string :post_title
+      t.integer :message_id, :limit => 8
+      t.integer :post_number
+      t.text :post_body, :limit => 4294967295
 	    t.timestamps
+      
     end
   end
 end

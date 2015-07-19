@@ -1,13 +1,13 @@
 class CreateUsers < ActiveRecord::Migration
   def change
     create_table :users do |t|
-    	t.column :name, :string
-    	t.column :profile_link, :string
-    	t.column :followed_by, :integer
-    	t.column :posts, :integer
-    	t.column :boards_moderated, :integer 
-    	t.column :alias_born, :timestamp
-        t.column :user_id, :integer
+        t.text :name
+        t.text :profile_link
+        t.integer :followed_by, :limit => 8
+        t.integer :posts, :limit => 8
+        t.integer :boards_moderated, :limit => 8
+        t.datetime :alias_born
+        t.integer :user_id, :limit => 8
     end
   end
 end
