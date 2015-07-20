@@ -33,7 +33,7 @@ end
 
 
 
-def boards
+def board_categories
 
 @@page.search(".hubcat table td a").each_with_index do |anchor,index|
 

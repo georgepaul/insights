@@ -9,10 +9,10 @@ require 'mechanize'
 end
 
 
-def self.boards
+def self.board_categories
 self.scrape
 page = Page.new "http://investorshub.advfn.com/boards/hubstocks.aspx"
-page.boards
+page.board_categories
 end
 
 
