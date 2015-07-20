@@ -45,7 +45,6 @@ end
 
 
 def board_category_rows
-	
 rows = Array.new
 @@page.search(".dtor,.dter").each_with_index do |table_row,index|
 row = Tablerow.new table_row
@@ -61,10 +60,7 @@ rowhash = { "post_number" => row.post_number,
 rows.push rowhash
 end
 end # each with index
-
 return rows
-
-
 end
 
 def board_category_last_page

@@ -12,7 +12,7 @@ end
 def self.all_board_categories
 self.scrape
 page = Page.new "http://investorshub.advfn.com/boards/hubstocks.aspx"
-page.board_categories
+page.board_categoriesLogic
 end
 
 def self.all_boards
