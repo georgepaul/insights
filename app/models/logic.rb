@@ -9,68 +9,89 @@ require 'mechanize'
 end
 
 
-def self.board_categories
+def self.all_board_categories
 self.scrape
 page = Page.new "http://investorshub.advfn.com/boards/hubstocks.aspx"
 page.board_categories
 end
 
+def self.all_boards
+self.scrape 
+board_categories = BoardCategory.all
+board_categories.each_with_index do |bc|
+base_url = bc.full_link
+next_start = base_url
+count = 0
+board_category_page = Page.new next_start
+last_page = board_category_page.board_category_last_page
+	
+	begin
+		rows = board_category_page.board_category_rows
+		#Update Board Logic
+		rows.each_with_index do |row,index|
+			Board.update_board row
+		end
+		next_start = base_url + "&page=" + (count + 1)
+	end while (count < last_page)
 
-def self.auth
+end
+end
+end
+
+def self.update_boards
+Board.update_boards
+end
+
+
+def self.posts
+
 self.scrape
 agent = Mechanize.new
 agent.user_agent_alias = 'Windows Mozilla'
-
 boards = Board.latest_post_before 30.days.ago.to_date
 
 boards.each_with_index do |board,index|
-boards.delete_at(index) if board.id < 13111
+	boards.delete_at(index) if board.id < 13111
 end
 
 boards.each do | board |
-next_page = board.full_link
-agent.add_auth(next_page, 'georgepaul@live.ca', '8751Qwer')
+	next_page = board.full_link
+	agent.add_auth(next_page, 'georgepaul@live.ca', '8751Qwer')
 
-logger.warn(next_page)
+	begin
+		page = Page.new next_page
+		a = page.next_start
+		@currentrow
 
-begin
-page = Page.new next_page
-a = page.next_start
-@currentrow
-
-if a == false
-	sleep(60.seconds)
-else
-	next_page = a
-	rows = page.posts
-
-rows.each_with_index  do |row,index|
-		@currentrow = row
-
-message_post = Page.new row["post_title_link"]
-if message_post.message_body.nil? || message_post.message_body.blank?
+	if a == false
+		sleep(60.seconds)
+	else
+		next_page = a
+		rows = page.posts
+		rows.each_with_index  do |row,index|
+			@currentrow = row
+			message_post = Page.new row["post_title_link"]
+	
+		if message_post.message_body.nil? || message_post.message_body.blank?
 		sleep(60.seconds) 
 		message_post = Page.new row["post_title_link"]
-	end
+		end
 
-	p = Post.save_or_skip message_post,row,board
+		p = Post.save_or_skip message_post,row,board
+		u = User.save_or_update message_post,row
 
-	
-			u = User.save_or_update message_post,row
-	end
-end # if a == false
-
+		end
+	end # if a == false
 end while (Tablerow.is_after_date @currentrow["post_date"])
-
-
-
-
 end #boards.each do | board |
-
-
-
-
 end
+
+
+
+
+
+
+
 #end
 #end
 
@@ -209,5 +230,3 @@ end
 
 
 
-
-end

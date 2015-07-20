@@ -1,10 +1,7 @@
 class Board < ActiveRecord::Base
 @@page
 
-
-
 def self.update_boards
-
 agent = Mechanize.new
 agent.user_agent_alias = 'Windows Mozilla'
 
@@ -14,7 +11,6 @@ bc = Array.new
 categories.each do |category|
 bc.push category if category.id < 80
 end
-
 
 bc.each do |bc|
 next_start = bc.full_link
@@ -52,8 +48,6 @@ end
 
 end
 
-
-
 @@page.search(".dtor,.dter").each_with_index do |table_row,index|
 	row = Tablerow.new table_row
 	rowhash = { "board_name" => row.board_name,
@@ -76,10 +70,6 @@ end while(count <= last_page)
 
 
 end # Looping Through All Board Category Pages
-
-
-
-	
 
 end #End Method
 

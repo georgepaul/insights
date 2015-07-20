@@ -34,18 +34,56 @@ end
 
 
 def board_categories
-
 @@page.search(".hubcat table td a").each_with_index do |anchor,index|
-
 bc = BoardCategory.new
 bc.id = anchor["href"][anchor["href"].index("cat_id=")+7,anchor["href"].length]
 bc.link = anchor["href"]
 bc.name = anchor.text
 bc.save
 end
+end
+
+
+def board_category_rows
+	
+rows = Array.new
+@@page.search(".dtor,.dter").each_with_index do |table_row,index|
+row = Tablerow.new table_row
+if row.is_valid_row?
+rowhash = { "post_number" => row.post_number,
+		"post_title" => row.post_title,
+		"post_title_link" => row.post_title_link,
+		"post_user" => row.username,
+		"post_user_link"=> row.user_profile_link,
+		"post_date"=> row.date,
+		"user_id" => row.user_id
+}
+rows.push rowhash
+end
+end # each with index
+
+return rows
+
 
 end
 
+def board_category_last_page
+begin
+link = @page.at("a:contains('Last >>')")["href"]
+page = link[link.index("page=")+6,link.length].to_i
+return page
+rescue 
+return false
+end
+end
+
+def board_category_last_page_href
+begin
+@page.at("a:contains('Last >>')")["href"]
+rescue 
+return false
+end
+end
 
 def page_href
 return @url
