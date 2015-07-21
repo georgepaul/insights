@@ -4,17 +4,14 @@ class Board < ActiveRecord::Base
 def self.update_boards
 agent = Mechanize.new
 agent.user_agent_alias = 'Windows Mozilla'
-
 categories = BoardCategory.all
 bc = Array.new
-
 categories.each do |category|
 bc.push category if category.id < 80
 end
-
 bc.each do |bc|
 next_start = bc.full_link
-
+logger.warn(bc.full_link)
 agent.add_auth(next_start, 'georgepaul@live.ca', '8751Qwer')
 count = 0
 last_page = 0
@@ -38,14 +35,12 @@ begin
 	end
 
 if (last_page == 0)
-
 unless @@page.at("a:contains('Last >')").nil?
 last_page = @@page.at("a:contains('Last >')")["href"] 
 last_page = last_page[last_page.index("page=")+5,last_page.length].to_i
 else
 last_page=1
 end
-
 end
 
 @@page.search(".dtor,.dter").each_with_index do |table_row,index|
@@ -61,16 +56,8 @@ end
 		
 		count = count + 1
 		next_start = bc.full_link + "&page=" + (count).to_s
-		
- 
 end while(count <= last_page)
-
-
-
-
-
 end # Looping Through All Board Category Pages
-
 end #End Method
 
 

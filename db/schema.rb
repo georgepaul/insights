@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150712170314) do
+ActiveRecord::Schema.define(version: 20150721004356) do
 
   create_table "board_categories", force: true do |t|
     t.string   "name"
@@ -24,9 +24,12 @@ ActiveRecord::Schema.define(version: 20150712170314) do
     t.text     "name"
     t.text     "board_link"
     t.datetime "created_at"
-    t.datetime "posts"
-    t.datetime "followers"
+    t.integer  "posts"
+    t.integer  "followers"
+    t.text     "latest_post"
     t.datetime "updated_at"
+    t.integer  "board_category_id"
+    t.datetime "last_post"
   end
 
   create_table "logics", force: true do |t|
@@ -40,12 +43,14 @@ ActiveRecord::Schema.define(version: 20150712170314) do
   end
 
   create_table "posts", force: true do |t|
-    t.text     "post_body"
-    t.integer  "post_number"
-    t.string   "post_title"
-    t.datetime "post_date"
-    t.string   "post_link"
+    t.integer  "board_id"
     t.integer  "user_id"
+    t.string   "post_link"
+    t.text     "post_date"
+    t.string   "post_title"
+    t.integer  "message_id",  limit: 8
+    t.integer  "post_number"
+    t.text     "post_body",   limit: 16777215
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -61,13 +66,13 @@ ActiveRecord::Schema.define(version: 20150712170314) do
   end
 
   create_table "users", force: true do |t|
-    t.string   "name"
-    t.string   "profile_link"
-    t.integer  "followed_by"
-    t.integer  "posts"
-    t.integer  "boards_moderated"
+    t.text     "name"
+    t.text     "profile_link"
+    t.integer  "followed_by",      limit: 8
+    t.integer  "posts",            limit: 8
+    t.integer  "boards_moderated", limit: 8
     t.datetime "alias_born"
-    t.integer  "user_id"
+    t.integer  "user_id",          limit: 8
   end
 
   create_table "word_to_posts", force: true do |t|

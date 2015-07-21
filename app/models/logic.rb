@@ -1,18 +1,14 @@
 class Logic < ActiveRecord::Base #PageLogic and associate Data
 
-
-
-
 def self.scrape
 require 'rubygems'
 require 'mechanize'
 end
 
-
 def self.all_board_categories
 self.scrape
 page = Page.new "http://investorshub.advfn.com/boards/hubstocks.aspx"
-page.board_categoriesLogic
+page.board_categories
 end
 
 def self.all_boards
@@ -43,7 +39,8 @@ Board.update_boards
 end
 
 
-def self.posts
+def self.posts_update
+
 
 self.scrape
 agent = Mechanize.new
@@ -56,6 +53,7 @@ end
 
 boards.each do | board |
 	next_page = board.full_link
+	logger.warn(board.name)
 	agent.add_auth(next_page, 'georgepaul@live.ca', '8751Qwer')
 
 	begin
@@ -84,6 +82,9 @@ boards.each do | board |
 	end # if a == false
 end while (Tablerow.is_after_date @currentrow["post_date"])
 end #boards.each do | board |
+
+
+=end
 end
 
 

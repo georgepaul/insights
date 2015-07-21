@@ -75,6 +75,47 @@ def self.save_or_skip message_post,row,board
 
 end
 
+def self.update_all
+require 'rubygems'
+require 'mechanize'
+agent = Mechanize.new
+agent.user_agent_alias = 'Windows Mozilla'
+boards = Board.latest_post_before 30.days.ago.to_date
+
+boards.each do | board |
+	next_page = board.full_link
+	logger.warn(board.name) unless board.blank?
+	agent.add_auth(next_page, 'georgepaul@live.ca', '8751Qwer')
+
+	begin
+		page = Page.new next_page
+		a = page.next_start
+		@currentrow
+
+	if a == false
+		sleep(60.seconds)
+	else
+		next_page = a
+		rows = page.posts
+		rows.each_with_index  do |row,index|
+			@currentrow = row
+			message_post = Page.new row["post_title_link"]
+	
+		if message_post.message_body.nil? || message_post.message_body.blank?
+		sleep(60.seconds) 
+		message_post = Page.new row["post_title_link"]
+		end
+
+		p = Post.save_or_skip message_post,row,board
+		u = User.save_or_update message_post,row
+
+		end
+	end # if a == false
+end while (Tablerow.is_after_date @currentrow["post_date"])
+end #boards.each do | board |
+
+end
+
 
 
 end
