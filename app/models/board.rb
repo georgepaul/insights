@@ -1,7 +1,18 @@
 class Board < ActiveRecord::Base
 @@page
+@@agent=nil
+require 'rubygems'
+require 'mechanize'
 
-def self.update_boards
+def self.test_record
+
+b = Board.new 
+b.name = "TEST"
+b.save
+end
+
+
+def self.update_boards # retrived all active boards from ihub
 agent = Mechanize.new
 agent.user_agent_alias = 'Windows Mozilla'
 categories = BoardCategory.all
@@ -100,11 +111,138 @@ board.last_post = DateTime.strptime(board.latest_post,"%m/%d/%Y %I:%M:%S %p")
 board.save
 end	
 
+end 
+
+def self.all_board_categories
+require 'rubygems'
+require 'mechanize'
+page = Page.new "http://investorshub.advfn.com/boards/hubstocks.aspx"
+page.board_categories
 end
 
 
 def self.latest_post_before threshold=30.days.ago.to_date 
 boards = Board.where("last_post > ?", threshold)
 end
+
+
+def posts_from_board threshold=1.day.ago.to_date
+next_page = self.full_link
+
+begin
+		page = Page.new next_page
+		next_page = page.next_start
+		rows = page.posts
+		
+		logger.warn("page posts"); "==============================>"
+		logger.warn(rows.length);
+		# ROWS remove any rows already in the db set next_page to false IF any of the rows r in the db
+
+unless rows.length == 0
+rows.each_with_index  do |row,index|
+			@lastrow = row 
+			logger.warn(@lastrow)
+			message_post = Page.new row["post_title_link"]
+			if message_post.message_body.nil? || message_post.message_body.blank?
+			logger.warn("Sleeping a")
+			sleep(1.minutes) 
+			message_post = Page.new row["post_title_link"]
+			end
+			p = Post.save_or_skip message_post,row,self
+			u = User.save_or_update message_post,row
+		end
+else
+	@lastrow = {"post_date" => 15.days.ago.to_datetime}
+	break
+end
+
+
+	
+	
+			
+end while (Tablerow.is_after_date @lastrow["post_date"], threshold || next_page == false)
+end
+
+
+def self.update_all_posts threshold=14.days.ago
+
+boards = Board.latest_post_before threshold.to_date
+
+
+
+boards.each do | board |
+	board.posts_from_board threshold
+end #boards.each do | board |
+end
+
+def self.update_from_last_board_forward threshold=14.days.ago
+
+#boards = Board.latest_post_before threshold.to_date #return all boards with the last post within the last 14 days
+boards = Board.where('id > 0');
+#boards = Board.where("id > ?", 2920)
+#boards = Board.where("id > ?", 2943)
+#find last post created_at, take that board_id, do all boards from that board forward
+@post = Post.order("created_at").last # retrieve the last post we saved for continuation
+
+
+boards.each do | board |
+logger.warn(board)	
+
+	unless @post.nil?
+
+	board.posts_from_board threshold if board.id >= @post.board_id # Skip over posts from before our last post
+	else
+		
+		board.posts_from_board threshold
+	end
+
+end #boards.each do | board |
+
+end
+
+def self.post_test threshold = 14.days.ago
+
+#boards = Board.latest_post_before threshold.to_date #return all boards with the last post within the last 14 days
+#boards = Board.where('board.id > 2845');
+boards = Board.where("id > ?", 2844)
+#find last post created_at, take that board_id, do all boards from that board forward
+@post = Post.order("created_at").last # retrieve the last post we saved for continuation
+
+
+boards.each do | board |
+logger.warn(board)	
+
+	unless @post.nil?
+
+	board.posts_from_board threshold # Skip over posts from before our last post
+	else
+		
+		board.posts_from_board threshold
+	end
+
+end #boards.each do | board |
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 end

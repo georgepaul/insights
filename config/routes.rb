@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   
     get 'insights' => 'insights#index'
   
+    post 'mostmentions' => 'insights#mostmentioned'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

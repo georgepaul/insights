@@ -18,19 +18,18 @@ def initialize url
 			@@page = page
 		end	
 	rescue => e
-
+	
 		if e.status == 403
 		agent.add_auth(url, 'georgepaul@live.ca', '8751Qwer')
 			
 			agent.get(url) do |page|
 				@@page = page
 			end		
-		else
-		logger.warn("Bad Auth")
-		end
-	end
+ 		end
+	
+	return @@page
 end
-
+end
 
 
 def board_categories
@@ -43,6 +42,9 @@ bc.save
 end
 end
 
+def self.string_to_datetime(string,format="%d/%y/%m %H:%M:%S")
+   return DateTime.strptime(string, format).to_time unless string.blank?
+  end
 
 def board_category_rows
 rows = Array.new

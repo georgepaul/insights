@@ -62,7 +62,7 @@ boards.each do | board |
 		@currentrow
 
 	if a == false
-		sleep(60.seconds)
+		sleep(30.seconds)
 	else
 		next_page = a
 		rows = page.posts
@@ -71,7 +71,7 @@ boards.each do | board |
 			message_post = Page.new row["post_title_link"]
 	
 		if message_post.message_body.nil? || message_post.message_body.blank?
-		sleep(60.seconds) 
+		sleep(30.seconds) 
 		message_post = Page.new row["post_title_link"]
 		end
 
@@ -84,9 +84,7 @@ end while (Tablerow.is_after_date @currentrow["post_date"])
 end #boards.each do | board |
 
 
-=end
 end
-
 
 
 

@@ -15,13 +15,18 @@
 //= require turbolinks
 //= require_tree .
 
+    
+
+
+
+
   function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Ticker', 'Total Mentions', 'Unique Mentions', '@Beginning' , '@End'],
-          ['ATWT', 1000, 400, 200,678],
-          ['MDMN', 1170, 460, 250,675],
-          ['TSNP', 660, 1120, 300,567],
-          ['BORK', 1030, 540, 350,567]
+          ['Ticker', 'Total Mentions'],
+          ['ATWT', 1000],
+          ['MDMN', 1170],
+          ['TSNP', 660],
+          ['BORK', 1030]
         ]);
 
         var options = {
@@ -32,7 +37,7 @@
           bars: 'horizontal', // Required for Material Bar Charts.
           hAxis: {format: 'decimal'},
           height: 400,
-          colors: ['#1b9e77', '#d95f02', '#3b5998','#777777']
+          colors: ['#1b9e77']
         };
 
         var chart = new google.charts.Bar(document.getElementById('chart_div'));

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150721004356) do
+ActiveRecord::Schema.define(version: 20150816021118) do
 
   create_table "board_categories", force: true do |t|
     t.string   "name"
@@ -23,21 +23,25 @@ ActiveRecord::Schema.define(version: 20150721004356) do
   create_table "boards", force: true do |t|
     t.text     "name"
     t.text     "board_link"
-    t.datetime "created_at"
     t.integer  "posts"
     t.integer  "followers"
     t.text     "latest_post"
-    t.datetime "updated_at"
     t.integer  "board_category_id"
     t.datetime "last_post"
-  end
-
-  create_table "logics", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "nodes", force: true do |t|
+  create_table "boarduserstats", force: true do |t|
+    t.integer  "board_id"
+    t.integer  "user_id"
+    t.float    "posts_per_day",               limit: 24
+    t.float    "posts_per_hour",              limit: 24
+    t.float    "avg_posts_per_hour",          limit: 24
+    t.float    "avg_posts_per_day",           limit: 24
+    t.float    "avg_unique_posts_per_day",    limit: 24
+    t.float    "avg_unique_posts_per_hour",   limit: 24
+    t.float    "avg_unique_posts_per_minute", limit: 24
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -55,12 +59,12 @@ ActiveRecord::Schema.define(version: 20150721004356) do
     t.datetime "updated_at"
   end
 
-  create_table "price_by_day_records", force: true do |t|
+  create_table "tablerows", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "tablerows", force: true do |t|
+  create_table "tickers", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -76,18 +80,19 @@ ActiveRecord::Schema.define(version: 20150721004356) do
   end
 
   create_table "word_to_posts", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.integer  "post_id"
     t.integer  "word_id"
     t.integer  "user_id"
     t.integer  "source_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "words", force: true do |t|
+    t.text     "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "name"
+    t.integer  "is_ticker",  default: 0
   end
 
 end

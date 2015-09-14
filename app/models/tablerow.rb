@@ -75,8 +75,11 @@ def post_id
 end
 
 def post_title 
-	
+	begin
 	@@element.search("td")[1].at("a").inner_text
+rescue
+end
+
 end
 
 def post_title_link 
@@ -92,16 +95,29 @@ def past_date? date=Time.now
 end
 
 def date node=nil
-	@@element.search("td")[3].inner_html
+	a = @@element.search("td")[3].inner_html
+	
 end
 
 def self.is_before_date curRow, date=Time.now
 return true if DateTime.parse(self.date) < date
 end
 
+def self.string_to_datetime(string,format="%d/%y/%m %H:%M:%S")
+   return DateTime.strptime(string, format).to_time unless string.blank?
+  end
 
-def self.is_after_date date=Time.now
-return true if DateTime.strptime(date,"%m/%d/%Y %I:%M:%S %p") > 30.days.ago.to_date
+def self.is_after_date date=Time.now.to_datetine, threshold = 14.days.ago
+
+
+begin
+date = Tablerow.string_to_datetime(date)
+
+rescue
+date = Time.now.to_datetime
+end
+
+return true if date > threshold.to_datetime
 return false
 end
 
